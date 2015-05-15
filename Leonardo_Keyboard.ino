@@ -1,13 +1,32 @@
 
+/*******
+ NOTES:
+ 
+ Arduino Leonardo ZX Spectrum keyboard interface 2015 Simon McDonough
+ 
+ The 8 "columns" of the spectrum keyboard matrix are mapped to pins 0-7
+ The 5 "rows" of the matrix are mapped to pins 8-12
+ 
+ Each of "columns" are set high using the pullup resistor and are shorted to 
+ ground when a key is pressed.
+ 
+ PIN 13 MUST BE SHORTED TO GROUND IN ORDER TO SEND KEY PRESSES
+ THIS IS SO THAT THE KEYBOARD INTERFACE CAN BE TURNED OFF
+ 
+********/
+
 int colStartPin = 0;
 int rowStartPin = 8;
 
 short previousState[40];
 short currentState[40];
 
+int useKeyboardPin = 13;      //If this goes LOW then send the keyboard signal
+
 void setup() {
 
   Serial.begin(9600);
+  Keyboard.begin();
   
   //Clear pins
   for (int row = 0; row < 5; row++) {
@@ -23,6 +42,8 @@ void setup() {
     previousState[x] = 0; 
     currentState[x] = 0;
   }
+  
+  pinMode(useKeyboardPin, INPUT_PULLUP);
 }
 
 void setRowHigh(int rowPin) {
@@ -35,7 +56,7 @@ void setRowHigh(int rowPin) {
 }
 
 
-int getKeyValue(int keyPos) {
+char getKeyValue(int keyPos) {
   
   int retVal;
   
@@ -90,13 +111,17 @@ int getKeyValue(int keyPos) {
 
 void pressKey(int keyPos) {
   
-  Serial.println("Key pressed " +  char(getKeyValue(keyPos)));
-  
+  if (digitalRead(useKeyboardPin) == LOW) {
+    Keyboard.press(getKeyValue(keyPos));
+  }  
 }
 
 void releaseKey(int keyPos) {
   
-  Serial.println("Key released " + char(getKeyValue(keyPos)));
+  if (digitalRead(useKeyboardPin) == LOW) {
+    Keyboard.release(getKeyValue(keyPos));
+  }
+
   
 }
 
@@ -105,17 +130,13 @@ void loop() {
   //Scan keyboard matrix
   for (int row = 0; row < 5; row++) {
     setRowHigh(rowStartPin + row);
-    for (int col = 0; col < 8; col++) {
-      
-      delay(10);
-      
-      if (!digitalRead(col)) {
+    for (int col = 0; col < 8; col++) {   
+      if (digitalRead(col) == LOW) {
         currentState[row * 8 + col] = 1;
       }
       else {
         currentState[row * 8 + col] = 0;
-      } 
-      
+      }      
     }
   }
 
@@ -139,7 +160,7 @@ Algorithm:
 
 Iterate rows, setting each row high in turn.
   Iterate columns, reading each pins status.
-    If (row,col) pin == HIGH
+    If (row,col) pin == LOW
          addToCurrentScanState
     end if
   NEXT
