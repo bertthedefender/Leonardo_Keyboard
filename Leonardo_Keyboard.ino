@@ -1,41 +1,49 @@
 
-int colStartPin = 1;
-int rowStartPin = 9;
+int colStartPin = 0;
+int rowStartPin = 8;
 
 short previousState[40];
 short currentState[40];
 
 void setup() {
 
+  Serial.begin(9600);
+  
   //Clear pins
   for (int row = 0; row < 5; row++) {
     pinMode(rowStartPin + row, OUTPUT);
-    digitalWrite(rowStartPin + row, LOW);
+    digitalWrite(rowStartPin + row, HIGH);
   }
 
   for (int col = 0; col < 8; col++) {
-    pinMode(colStartPin + col, INPUT);
+    pinMode(colStartPin + col, INPUT_PULLUP);
   }
 
   for (int x = 0; x < 40; x++) {
-    previousState[x] = 0;
+    previousState[x] = 0; 
     currentState[x] = 0;
   }
 }
 
 void setRowHigh(int rowPin) {
-  digitalWrite(rowStartPin, LOW);
-  digitalWrite(rowStartPin + 1, LOW);
-  digitalWrite(rowStartPin + 2, LOW);
-  digitalWrite(rowStartPin + 3, LOW);
-  digitalWrite(rowStartPin + 4, LOW);
-  digitalWrite(rowPin, HIGH);
+  digitalWrite(rowStartPin, HIGH);
+  digitalWrite(rowStartPin + 1, HIGH);
+  digitalWrite(rowStartPin + 2, HIGH);
+  digitalWrite(rowStartPin + 3, HIGH);
+  digitalWrite(rowStartPin + 4, HIGH);
+  digitalWrite(rowPin, LOW);
 }
 
 void pressKey(int keyPos) {
+  
+  Serial.println("Key pressed " + keyPos);
+  
 }
 
 void releaseKey(int keyPos) {
+  
+  Serial.println("Key released " + keyPos);
+  
 }
 
 void loop() {
@@ -44,11 +52,14 @@ void loop() {
   for (int row = 0; row < 5; row++) {
     setRowHigh(rowStartPin + row);
     for (int col = 0; col < 8; col++) {
-      if (digitalRead(col)) {
-        currentState[row * col + col] = 1;
+      
+      delay(10);
+      
+      if (!digitalRead(col)) {
+        currentState[row * 8 + col] = 1;
       }
       else {
-        currentState[row * col + col] = 0;
+        currentState[row * 8 + col] = 0;
       } 
       
     }
