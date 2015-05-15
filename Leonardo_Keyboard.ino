@@ -96,7 +96,7 @@ void pressKey(int keyPos) {
 
 void releaseKey(int keyPos) {
   
-  Serial.println("Key released " + keyPos);
+  Serial.println("Key released " + char(getKeyValue(keyPos)));
   
 }
 
