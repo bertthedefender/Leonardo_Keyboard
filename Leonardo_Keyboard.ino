@@ -2,13 +2,13 @@
 /*******
  NOTES:
  
- Arduino Leonardo ZX Spectrum keyboard interface 2015 Simon McDonough
+ Arduino Leonardo ZX Spectrum keyboard interface (c) 2015 Simon McDonough
  
  The 8 "columns" of the spectrum keyboard matrix are mapped to pins 0-7
  The 5 "rows" of the matrix are mapped to pins 8-12
  
- Each of "columns" are set high using the pullup resistor and are shorted to 
- ground when a key is pressed.
+ Each of "columns" are set high using the internal pullup resistor and
+ are shorted to ground when a key is pressed.
  
  PIN 13 MUST BE SHORTED TO GROUND IN ORDER TO SEND KEY PRESSES
  THIS IS SO THAT THE KEYBOARD INTERFACE CAN BE TURNED OFF
@@ -25,7 +25,6 @@ int useKeyboardPin = 13;      //If this goes LOW then send the keyboard signal
 
 void setup() {
 
-  Serial.begin(9600);
   Keyboard.begin();
   
   //Clear pins
