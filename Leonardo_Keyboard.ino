@@ -23,6 +23,8 @@ short currentState[40];
 
 int useKeyboardPin = 13;      //If this goes LOW then send the keyboard signal
 
+int keyMode = 1;              // 1 = PC Mode, 2 = FUSE emulator mode
+
 void setup() {
 
   Keyboard.begin();
@@ -46,26 +48,22 @@ void setup() {
 }
 
 void setRowPressed(int rowPin) {
-  
-  for (int x=0; x<5; x++) {
+
+  for (int x = 0; x < 5; x++) {
     pinMode(rowStartPin + x, INPUT);
     digitalWrite(rowStartPin + x, HIGH);
   }
-  
-  
+
+
   pinMode(rowPin, OUTPUT);
   digitalWrite(rowPin, LOW);
 }
 
 void setColumnPressed(int colPin) {
-  digitalWrite(colStartPin, LOW);
-  digitalWrite(colStartPin + 1, LOW);
-  digitalWrite(colStartPin + 2, LOW);
-  digitalWrite(colStartPin + 3, LOW);
-  digitalWrite(colStartPin + 4, LOW);
-  digitalWrite(colStartPin + 5, LOW);
-  digitalWrite(colStartPin + 6, LOW);
-  digitalWrite(colStartPin + 7, LOW);
+
+  for (int x = 0; x < 8; x++) {
+    digitalWrite(colStartPin + x, LOW);
+  }
   digitalWrite(colPin, HIGH);
 }
 
