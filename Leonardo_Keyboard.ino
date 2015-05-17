@@ -23,50 +23,51 @@ short currentState[40];
 
 int useKeyboardPin = 13;      //If this goes LOW then send the keyboard signal
 
+int changeModePin = 0;
 int keyMode = 1;              // 1 = PC Mode, 2 = FUSE emulator mode
 
 
 // Constants for membrane matrix positions
 const int SPEC_KEY_1 = 0;
-int SPEC_KEY_Q = 1;
-int SPEC_KEY_A = 2;
-int SPEC_KEY_0 = 3;
-int SPEC_KEY_P = 4;
-int SPEC_KEY_CAPS = 5;
-int SPEC_KEY_ENTER = 6;
-int SPEC_KEY_SPACE = 7;
-int SPEC_KEY_2 = 8;
-int SPEC_KEY_W = 9;
-int SPEC_KEY_S = 10;
-int SPEC_KEY_9 = 11;
-int SPEC_KEY_O = 12;
-int SPEC_KEY_Z = 13;
-int SPEC_KEY_L = 14;
-int SPEC_KEY_SYMBOL_SHIFT = 15;
-int SPEC_KEY_3 = 16;
-int SPEC_KEY_E = 17;
-int SPEC_KEY_D = 18;
-int SPEC_KEY_8 = 19;
-int SPEC_KEY_I = 20;
-int SPEC_KEY_X = 21;
-int SPEC_KEY_K = 22;
-int SPEC_KEY_M = 23;
-int SPEC_KEY_4 = 24;
-int SPEC_KEY_R = 25;
-int SPEC_KEY_F = 26;
-int SPEC_KEY_7 = 27;
-int SPEC_KEY_U = 28;
-int SPEC_KEY_C = 29;
-int SPEC_KEY_J = 30;
-int SPEC_KEY_N = 31;
-int SPEC_KEY_5 = 32;
-int SPEC_KEY_T = 33;
-int SPEC_KEY_G = 34;
-int SPEC_KEY_6 = 35;
-int SPEC_KEY_Y = 36;
-int SPEC_KEY_V = 37;
-int SPEC_KEY_H = 38;
-int SPEC_KEY_B = 39;
+const int SPEC_KEY_Q = 1;
+const int SPEC_KEY_A = 2;
+const int SPEC_KEY_0 = 3;
+const int SPEC_KEY_P = 4;
+const int SPEC_KEY_SHIFT = 5;
+const int SPEC_KEY_ENTER = 6;
+const int SPEC_KEY_SPACE = 7;
+const int SPEC_KEY_2 = 8;
+const int SPEC_KEY_W = 9;
+const int SPEC_KEY_S = 10;
+const int SPEC_KEY_9 = 11;
+const int SPEC_KEY_O = 12;
+const int SPEC_KEY_Z = 13;
+const int SPEC_KEY_L = 14;
+const int SPEC_KEY_SYMBOL_SHIFT = 15;
+const int SPEC_KEY_3 = 16;
+const int SPEC_KEY_E = 17;
+const int SPEC_KEY_D = 18;
+const int SPEC_KEY_8 = 19;
+const int SPEC_KEY_I = 20;
+const int SPEC_KEY_X = 21;
+const int SPEC_KEY_K = 22;
+const int SPEC_KEY_M = 23;
+const int SPEC_KEY_4 = 24;
+const int SPEC_KEY_R = 25;
+const int SPEC_KEY_F = 26;
+const int SPEC_KEY_7 = 27;
+const int SPEC_KEY_U = 28;
+const int SPEC_KEY_C = 29;
+const int SPEC_KEY_J = 30;
+const int SPEC_KEY_N = 31;
+const int SPEC_KEY_5 = 32;
+const int SPEC_KEY_T = 33;
+const int SPEC_KEY_G = 34;
+const int SPEC_KEY_6 = 35;
+const int SPEC_KEY_Y = 36;
+const int SPEC_KEY_V = 37;
+const int SPEC_KEY_H = 38;
+const int SPEC_KEY_B = 39;
 
 void setup() {
 
@@ -118,45 +119,45 @@ char getKeyValue(int keyPos) {
   switch (keyPos)
   {
     case SPEC_KEY_1:  retVal = '1';  break;
-    case 1:  retVal = 'q';  break;
-    case 2:  retVal = 'a';  break;
-    case 3:  retVal = '0';  break;
-    case 4:  retVal = 'p';  break;
-    case 5:  retVal = KEY_LEFT_SHIFT; break;
-    case 6:  retVal = KEY_RETURN; break;
-    case 7:  retVal = ' ';  break;
-    case 8:  retVal = '2';  break;
-    case 9:  retVal = 'w';  break;
-    case 10:  retVal = 's';  break;
-    case 11:  retVal = '9';  break;
-    case 12:  retVal = 'o';  break;
-    case 13:  retVal = 'z';  break;
-    case 14:  retVal = 'l';  break;
-    case 15:  retVal = KEY_LEFT_CTRL;  break;        // Symbol shift
-    case 16:  retVal = '3';  break;
-    case 17:  retVal = 'e';  break;
-    case 18:  retVal = 'd';  break;
-    case 19:  retVal = '8';  break;
-    case 20:  retVal = 'i';  break;
-    case 21:  retVal = 'x';  break;
-    case 22:  retVal = 'k';  break;
-    case 23:  retVal = 'm';  break;
-    case 24:  retVal = '4';  break;
-    case 25:  retVal = 'r';  break;
-    case 26:  retVal = 'f';  break;
-    case 27:  retVal = '7';  break;
-    case 28:  retVal = 'u';  break;
-    case 29:  retVal = 'c';  break;
-    case 30:  retVal = 'j';  break;
-    case 31:  retVal = 'n';  break;
-    case 32:  retVal = '5';  break;
-    case 33:  retVal = 't';  break;
-    case 34:  retVal = 'g';  break;
-    case 35:  retVal = '6';  break;
-    case 36:  retVal = 'y';  break;
-    case 37:  retVal = 'v';  break;
-    case 38:  retVal = 'h';  break;
-    case 39:  retVal = 'b';  break;
+    case SPEC_KEY_Q:  retVal = 'q';  break;
+    case SPEC_KEY_A:  retVal = 'a';  break;
+    case SPEC_KEY_0:  retVal = '0';  break;
+    case SPEC_KEY_P:  retVal = 'p';  break;
+    case SPEC_KEY_SHIFT:  retVal = KEY_LEFT_SHIFT; break;
+    case SPEC_KEY_ENTER:  retVal = KEY_RETURN; break;
+    case SPEC_KEY_SPACE:  retVal = ' ';  break;
+    case SPEC_KEY_2:  retVal = '2';  break;
+    case SPEC_KEY_W:  retVal = 'w';  break;
+    case SPEC_KEY_S:  retVal = 's';  break;
+    case SPEC_KEY_9:  retVal = '9';  break;
+    case SPEC_KEY_O:  retVal = 'o';  break;
+    case SPEC_KEY_Z:  retVal = 'z';  break;
+    case SPEC_KEY_L:  retVal = 'l';  break;
+    case SPEC_KEY_SYMBOL_SHIFT:  retVal = KEY_LEFT_CTRL;  break;        // Symbol shift
+    case SPEC_KEY_3:  retVal = '3';  break;
+    case SPEC_KEY_E:  retVal = 'e';  break;
+    case SPEC_KEY_D:  retVal = 'd';  break;
+    case SPEC_KEY_8:  retVal = '8';  break;
+    case SPEC_KEY_I:  retVal = 'i';  break;
+    case SPEC_KEY_X:  retVal = 'x';  break;
+    case SPEC_KEY_K:  retVal = 'k';  break;
+    case SPEC_KEY_M:  retVal = 'm';  break;
+    case SPEC_KEY_4:  retVal = '4';  break;
+    case SPEC_KEY_R:  retVal = 'r';  break;
+    case SPEC_KEY_F:  retVal = 'f';  break;
+    case SPEC_KEY_7:  retVal = '7';  break;
+    case SPEC_KEY_U:  retVal = 'u';  break;
+    case SPEC_KEY_C:  retVal = 'c';  break;
+    case SPEC_KEY_J:  retVal = 'j';  break;
+    case SPEC_KEY_N:  retVal = 'n';  break;
+    case SPEC_KEY_5:  retVal = '5';  break;
+    case SPEC_KEY_T:  retVal = 't';  break;
+    case SPEC_KEY_G:  retVal = 'g';  break;
+    case SPEC_KEY_6:  retVal = '6';  break;
+    case SPEC_KEY_Y:  retVal = 'y';  break;
+    case SPEC_KEY_V:  retVal = 'v';  break;
+    case SPEC_KEY_H:  retVal = 'h';  break;
+    case SPEC_KEY_B:  retVal = 'b';  break;
     default:
       retVal = 0;
   }
@@ -168,6 +169,13 @@ boolean useKeyboard() {
   return digitalRead(useKeyboardPin) == LOW;
 }
 
+// Returns true if a key is in the current scan buffer but not in the previous buffer
+boolean isNewlyPressed(int keyPos) {
+    if (!previousState[keyPos] && currentState[keyPos]) {
+       return true; 
+    }
+    return false;
+}
 
 void processKeys() {
 
@@ -177,6 +185,7 @@ void processKeys() {
  
   
   if (keyMode == 1) {          //PC Mode
+    //Process special keys first 
     
     
     
