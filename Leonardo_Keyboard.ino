@@ -45,13 +45,28 @@ void setup() {
   pinMode(useKeyboardPin, INPUT_PULLUP);
 }
 
-void setRowHigh(int rowPin) {
-  digitalWrite(rowStartPin, HIGH);
-  digitalWrite(rowStartPin + 1, HIGH);
-  digitalWrite(rowStartPin + 2, HIGH);
-  digitalWrite(rowStartPin + 3, HIGH);
-  digitalWrite(rowStartPin + 4, HIGH);
+void setRowPressed(int rowPin) {
+  
+  for (int x=0; x<5; x++) {
+    pinMode(rowStartPin + x, INPUT);
+    digitalWrite(rowStartPin + x, HIGH);
+  }
+  
+  
+  pinMode(rowPin, OUTPUT);
   digitalWrite(rowPin, LOW);
+}
+
+void setColumnPressed(int colPin) {
+  digitalWrite(colStartPin, LOW);
+  digitalWrite(colStartPin + 1, LOW);
+  digitalWrite(colStartPin + 2, LOW);
+  digitalWrite(colStartPin + 3, LOW);
+  digitalWrite(colStartPin + 4, LOW);
+  digitalWrite(colStartPin + 5, LOW);
+  digitalWrite(colStartPin + 6, LOW);
+  digitalWrite(colStartPin + 7, LOW);
+  digitalWrite(colPin, HIGH);
 }
 
 
@@ -128,8 +143,9 @@ void loop() {
 
   //Scan keyboard matrix
   for (int row = 0; row < 5; row++) {
-    setRowHigh(rowStartPin + row);
+    setRowPressed(rowStartPin + row);
     for (int col = 0; col < 8; col++) {
+      setColumnPressed(colStartPin + col);
       if (digitalRead(col) == LOW) {
         delay(10);                          // debounce delay
         if (digitalRead(col) == LOW) {
