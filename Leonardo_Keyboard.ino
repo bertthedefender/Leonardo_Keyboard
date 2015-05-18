@@ -25,6 +25,49 @@ int useKeyboardPin = 13;      //If this goes LOW then send the keyboard signal
 
 int keyMode = 1;              // 1 = PC Mode, 2 = FUSE emulator mode
 
+
+// Constants for membrane matrix positions
+const int SPEC_KEY_1 = 0;
+int SPEC_KEY_Q = 1;
+int SPEC_KEY_A = 2;
+int SPEC_KEY_0 = 3;
+int SPEC_KEY_P = 4;
+int SPEC_KEY_CAPS = 5;
+int SPEC_KEY_ENTER = 6;
+int SPEC_KEY_SPACE = 7;
+int SPEC_KEY_2 = 8;
+int SPEC_KEY_W = 9;
+int SPEC_KEY_S = 10;
+int SPEC_KEY_9 = 11;
+int SPEC_KEY_O = 12;
+int SPEC_KEY_Z = 13;
+int SPEC_KEY_L = 14;
+int SPEC_KEY_SYMBOL_SHIFT = 15;
+int SPEC_KEY_3 = 16;
+int SPEC_KEY_E = 17;
+int SPEC_KEY_D = 18;
+int SPEC_KEY_8 = 19;
+int SPEC_KEY_I = 20;
+int SPEC_KEY_X = 21;
+int SPEC_KEY_K = 22;
+int SPEC_KEY_M = 23;
+int SPEC_KEY_4 = 24;
+int SPEC_KEY_R = 25;
+int SPEC_KEY_F = 26;
+int SPEC_KEY_7 = 27;
+int SPEC_KEY_U = 28;
+int SPEC_KEY_C = 29;
+int SPEC_KEY_J = 30;
+int SPEC_KEY_N = 31;
+int SPEC_KEY_5 = 32;
+int SPEC_KEY_T = 33;
+int SPEC_KEY_G = 34;
+int SPEC_KEY_6 = 35;
+int SPEC_KEY_Y = 36;
+int SPEC_KEY_V = 37;
+int SPEC_KEY_H = 38;
+int SPEC_KEY_B = 39;
+
 void setup() {
 
   Keyboard.begin();
@@ -74,7 +117,7 @@ char getKeyValue(int keyPos) {
 
   switch (keyPos)
   {
-    case 0:  retVal = '1';  break;
+    case SPEC_KEY_1:  retVal = '1';  break;
     case 1:  retVal = 'q';  break;
     case 2:  retVal = 'a';  break;
     case 3:  retVal = '0';  break;
@@ -121,21 +164,43 @@ char getKeyValue(int keyPos) {
   return retVal;
 }
 
-void pressKey(int keyPos) {
-
-  if (digitalRead(useKeyboardPin) == LOW) {
-    Keyboard.press(getKeyValue(keyPos));
-  }
+boolean useKeyboard() {
+  return digitalRead(useKeyboardPin) == LOW;
 }
 
-void releaseKey(int keyPos) {
 
-  if (digitalRead(useKeyboardPin) == LOW) {
-    Keyboard.release(getKeyValue(keyPos));
+void processKeys() {
+
+  if (!useKeyboard()) {
+    return;
+  } 
+ 
+  
+  if (keyMode == 1) {          //PC Mode
+    
+    
+    
   }
+  
+  
+  
+  
+  if (keyMode == 2) {          //FUSE emulator mode
+    
+    for (int x = 0; x < 40; x++) {
+      if (currentState[x] && !previousState[x])
+        Keyboard.press(getKeyValue(x));
 
+      if (previousState[x] && !currentState[x])
+        Keyboard.release(getKeyValue(x));
+
+      previousState[x] = currentState[x];
+    }
+
+  } 
 
 }
+
 
 void loop() {
 
@@ -159,15 +224,9 @@ void loop() {
     }
   }
 
-  for (int x = 0; x < 40; x++) {
-    if (currentState[x] && !previousState[x])
-      pressKey(x);
+  processKeys();
 
-    if (previousState[x] && !currentState[x])
-      releaseKey(x);
 
-    previousState[x] = currentState[x];
-  }
 
 
 
