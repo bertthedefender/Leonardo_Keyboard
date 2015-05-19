@@ -301,6 +301,9 @@ void processKeys() {
 
 void loop() {
 
+  //TODO:  Scan keymap change pin first
+  
+  
   //Scan keyboard matrix
   for (int row = 0; row < 5; row++) {
     setRowPressed(rowStartPin + row);
