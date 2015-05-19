@@ -26,6 +26,7 @@ int useKeyboardPin = 13;      //If this goes LOW then send the keyboard signal
 int changeModePin = 0;
 int keyMode = 1;              // 1 = PC Mode, 2 = FUSE emulator mode
 
+int shifted = false;
 
 // Constants for membrane matrix positions
 const int SPEC_KEY_1 = 0;
@@ -192,10 +193,21 @@ void clearUnpressedKeys() {
     if (previousState[x] && !currentState[x])
       Keyboard.release(getKeyValue(x));
   }
+
 }
 
+void pressAndRelease(char keyPress)
+{
+  shifted = true;
+  Keyboard.press(keyPress);
+  delay(10);
+  Keyboard.release(keyPress);
+  delay(20);
+}
 
 void processKeys() {
+
+  shifted = false;
 
   if (!useKeyboard()) {
     return;
@@ -203,85 +215,135 @@ void processKeys() {
 
   clearUnpressedKeys();
 
-
   if (keyMode == 1) {          //PC Mode
     //Process special keys first
 
-    if (isKeyDown(SPEC_KEY_SYMBOL_SHIFT)) {
-      //Symbol processing
-      if (isKeyDown[SPEC_KEY_P])
-        Keyboard.press('\"');
-      else if (isKeyDown[SPEC_KEY_1])
-        Keyboard.press('!');
-      else if (isKeyDown[SPEC_KEY_2])
-        Keyboard.press('@');
-      else if (isKeyDown[SPEC_KEY_3])
-        Keyboard.press('#');
-      else if (isKeyDown[SPEC_KEY_4])
-        Keyboard.press('$');
-      else if (isKeyDown[SPEC_KEY_5])
-        Keyboard.press('%');
-      else if (isKeyDown[SPEC_KEY_6])
-        Keyboard.press('&');
-      else if (isKeyDown[SPEC_KEY_7])
-        Keyboard.press('\'');
-      else if (isKeyDown[SPEC_KEY_8])
-        Keyboard.press('(');
-      else if (isKeyDown[SPEC_KEY_9])
-        Keyboard.press(')');
-      else if (isKeyDown[SPEC_KEY_0])
-        Keyboard.press('_');
-      else if (isKeyDown[SPEC_KEY_R])
-        Keyboard.press('<');
-      else if (isKeyDown[SPEC_KEY_T])
-        Keyboard.press('>');
-      else if (isKeyDown[SPEC_KEY_O])
-        Keyboard.press(';');
-      else if (isKeyDown[SPEC_KEY_H])
-        Keyboard.press('^');
-      else if (isKeyDown[SPEC_KEY_J])
-        Keyboard.press('-');
-      else if (isKeyDown[SPEC_KEY_K])
-        Keyboard.press('+');
-      else if (isKeyDown[SPEC_KEY_L])
-        Keyboard.press('=');
-      else if (isKeyDown[SPEC_KEY_Z])
-        Keyboard.press(':');
-      else if (isKeyDown[SPEC_KEY_X])
-        Keyboard.press('p');        //TODO: POUND SIGN
-      else if (isKeyDown[SPEC_KEY_C])
-        Keyboard.press('?');
-      else if (isKeyDown[SPEC_KEY_V])
-        Keyboard.press('/');
-      else if (isKeyDown[SPEC_KEY_B])
-        Keyboard.press('*');
-      else if (isKeyDown[SPEC_KEY_N])
-        Keyboard.press(',');
-      else if (isKeyDown[SPEC_KEY_M])
-        Keyboard.press('.');
+    if (isKeyDown(SPEC_KEY_SHIFT) &&
+        isKeyDown(SPEC_KEY_SYMBOL_SHIFT)) {
+      if (isKeyDown(SPEC_KEY_1))
+        pressAndRelease(KEY_F1);
+      if (isKeyDown(SPEC_KEY_2))
+        pressAndRelease(KEY_F2);
+      if (isKeyDown(SPEC_KEY_3))
+        pressAndRelease(KEY_F3);
+      if (isKeyDown(SPEC_KEY_4))
+        pressAndRelease(KEY_F4);
+      if (isKeyDown(SPEC_KEY_5))
+        pressAndRelease(KEY_F5);
+      if (isKeyDown(SPEC_KEY_6))
+        pressAndRelease(KEY_F6);
+      if (isKeyDown(SPEC_KEY_7))
+        pressAndRelease(KEY_F7);
+      if (isKeyDown(SPEC_KEY_8))
+        pressAndRelease(KEY_F8);
+      if (isKeyDown(SPEC_KEY_9))
+        pressAndRelease(KEY_F9);
+      if (isKeyDown(SPEC_KEY_0))
+        pressAndRelease(KEY_F10);
     }
+    else if (isKeyDown(SPEC_KEY_SHIFT))
+    {
+      if (isKeyDown(SPEC_KEY_0)) {
+        pressAndRelease(KEY_BACKSPACE);
+      }
+      if (isKeyDown(SPEC_KEY_1)) {
+        pressAndRelease(KEY_TAB);
+      }
 
+      if (isKeyDown(SPEC_KEY_2)) {
+        pressAndRelease(KEY_CAPS_LOCK);
+      }
+      if (isKeyDown(SPEC_KEY_5)) {
+        pressAndRelease(KEY_LEFT_ARROW);
+
+      }
+      if (isKeyDown(SPEC_KEY_6)) {
+        pressAndRelease(KEY_DOWN_ARROW);
+
+      }
+      if (isKeyDown(SPEC_KEY_7)) {
+        pressAndRelease(KEY_UP_ARROW);
+
+      }
+      if (isKeyDown(SPEC_KEY_8)) {
+        pressAndRelease(KEY_RIGHT_ARROW);
+
+      }
+      if (isKeyDown(SPEC_KEY_SPACE)) {
+        pressAndRelease(KEY_ESC);
+      }
+    }
     else
 
-      if (isKeyDown(SPEC_KEY_SHIFT))
-      {
-        if (isKeyDown(SPEC_KEY_2))
-          Keyboard.press(KEY_CAPS_LOCK);
-        else if (isKeyDown[SPEC_KEY_5])
-          Keyboard.press(KEY_LEFT_ARROW);
-        else if (isKeyDown[SPEC_KEY_6])
-          Keyboard.press(KEY_DOWN_ARROW);
-        else if (isKeyDown[SPEC_KEY_7])
-          Keyboard.press(KEY_UP_ARROW);
-        else if (isKeyDown[SPEC_KEY_8])
-          Keyboard.press(KEY_RIGHT_ARROW);
+      if (isKeyDown(SPEC_KEY_SYMBOL_SHIFT)) {
+        //Symbol processing
+        if (isKeyDown(SPEC_KEY_P))
+          pressAndRelease('@');            //Arduino is US layout!
+        else if (isKeyDown(SPEC_KEY_1))
+          pressAndRelease('!');
+        else if (isKeyDown(SPEC_KEY_2))
+          pressAndRelease('\"');           //Arduino is US layout!
+        else if (isKeyDown(SPEC_KEY_3))
+          pressAndRelease('#');
+        else if (isKeyDown(SPEC_KEY_4))
+          pressAndRelease('$');
+        else if (isKeyDown(SPEC_KEY_5))
+          pressAndRelease('%');
+        else if (isKeyDown(SPEC_KEY_6))
+          pressAndRelease('&');
+        else if (isKeyDown(SPEC_KEY_7))
+          pressAndRelease('\'');
+        else if (isKeyDown(SPEC_KEY_8))
+          pressAndRelease('(');
+        else if (isKeyDown(SPEC_KEY_9))
+          pressAndRelease(')');
+        else if (isKeyDown(SPEC_KEY_0))
+          pressAndRelease('_');
+        else if (isKeyDown(SPEC_KEY_R))
+          pressAndRelease('<');
+        else if (isKeyDown(SPEC_KEY_T))
+          pressAndRelease('>');
+        else if (isKeyDown(SPEC_KEY_O))
+          pressAndRelease(';');
+        else if (isKeyDown(SPEC_KEY_H))
+          pressAndRelease('^');
+        else if (isKeyDown(SPEC_KEY_J))
+          pressAndRelease('-');
+        else if (isKeyDown(SPEC_KEY_K))
+          pressAndRelease('+');
+        else if (isKeyDown(SPEC_KEY_L))
+          pressAndRelease('=');
+        else if (isKeyDown(SPEC_KEY_Z))
+          pressAndRelease(':');
+        else if (isKeyDown(SPEC_KEY_X))
+          pressAndRelease('_');            //Pound sign not supported
+        else if (isKeyDown(SPEC_KEY_C))
+          pressAndRelease('?');
+        else if (isKeyDown(SPEC_KEY_V))
+          pressAndRelease('/');
+        else if (isKeyDown(SPEC_KEY_B))
+          pressAndRelease('*');
+        else if (isKeyDown(SPEC_KEY_N))
+          pressAndRelease(',');
+        else if (isKeyDown(SPEC_KEY_M))
+          pressAndRelease('.');
       }
-      else
-        for (int x = 0; x < 40; x++) {
-          if (currentState[x] && !previousState[x])
-            Keyboard.press(getKeyValue(x));
-        }
 
+    if (shifted) {
+      currentState[SPEC_KEY_SYMBOL_SHIFT] = 0;
+      currentState[SPEC_KEY_SHIFT] = 0;
+      previousState[SPEC_KEY_SYMBOL_SHIFT] = 0;
+      previousState[SPEC_KEY_SHIFT] = 0;
+      Keyboard.releaseAll();
+      return;
+
+    }
+    if (!shifted)    {
+      for (int x = 0; x < 40; x++) {
+        if (currentState[x] && !previousState[x])
+          Keyboard.press(getKeyValue(x));
+      }
+    }
 
   }
 
@@ -302,15 +364,15 @@ void processKeys() {
 void loop() {
 
   //TODO:  Scan keymap change pin first
-  
-  
+
+
   //Scan keyboard matrix
   for (int row = 0; row < 5; row++) {
     setRowPressed(rowStartPin + row);
     for (int col = 0; col < 8; col++) {
       setColumnPressed(colStartPin + col);
       if (digitalRead(col) == LOW) {
-        delay(10);                          // debounce delay
+        delay(20);                          // debounce delay
         if (digitalRead(col) == LOW) {
           currentState[row * 8 + col] = 1;
         }
@@ -330,7 +392,6 @@ void loop() {
   for (int x = 0; x < 40; x++) {
     previousState[x] = currentState[x];
   }
-
 
 
 
