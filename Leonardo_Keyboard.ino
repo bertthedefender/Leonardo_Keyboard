@@ -12,7 +12,19 @@
 
  PIN 13 MUST BE SHORTED TO GROUND IN ORDER TO SEND KEY PRESSES
  THIS IS SO THAT THE KEYBOARD INTERFACE CAN BE TURNED OFF
-
+ 
+ Keyboard has two modes.
+ 
+ MODE 1:  PC Mode - many key symbols ranslated to Symbol-Shift and Caps-Shift
+   equivalents.  Caps lock etc works. Symbol shift + key to access symbols
+   Other keys:
+     BREAK = Escape
+     EDIT = Tab
+     EXTEND MODE + number = Function key
+     INV VIDEO = Alt
+     
+ MODE 2:  Emulator mode - all keys output their raw spectrum equivalents. Except
+          for symbol shift which maps to CTRL.
 ********/
 
 int colStartPin = 0;
@@ -200,9 +212,9 @@ void pressAndRelease(char keyPress)
 {
   shifted = true;
   Keyboard.press(keyPress);
-  delay(10);
+  delay(5);
   Keyboard.release(keyPress);
-  delay(20);
+  delay(30);
 }
 
 void processKeys() {
@@ -339,9 +351,23 @@ void processKeys() {
 
     }
     if (!shifted)    {
+      
+      if (!(currentState[SPEC_KEY_SHIFT] &&
+          currentState[SPEC_KEY_4]))
+          Keyboard.release(KEY_LEFT_ALT);
+      
+      if (currentState[SPEC_KEY_SHIFT] &&
+          currentState[SPEC_KEY_4])
+          {
+            Keyboard.press(KEY_LEFT_ALT);
+            currentState[SPEC_KEY_SHIFT] = currentState[SPEC_KEY_4] = 0;
+            previousState[SPEC_KEY_SHIFT] = previousState[SPEC_KEY_SHIFT] = 0;
+          }
+      
       for (int x = 0; x < 40; x++) {
-        if (currentState[x] && !previousState[x])
+        if (currentState[x] && !previousState[x]) {
           Keyboard.press(getKeyValue(x));
+        }
       }
     }
 
