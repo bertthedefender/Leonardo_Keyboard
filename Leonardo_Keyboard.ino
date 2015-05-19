@@ -171,42 +171,130 @@ boolean useKeyboard() {
 
 // Returns true if a key is in the current scan buffer but not in the previous buffer
 boolean isNewlyPressed(int keyPos) {
-    if (!previousState[keyPos] && currentState[keyPos]) {
-       return true; 
-    }
-    return false;
+  if (!previousState[keyPos] && currentState[keyPos]) {
+    return true;
+  }
+  return false;
 }
+
+boolean isKeyDown(int keyPos) {
+  return currentState[keyPos];
+}
+
+boolean wasKeyDown(int keyPos) {
+  return previousState[keyPos];
+}
+
+void clearUnpressedKeys() {
+
+  for (int x = 0; x < 40; x++) {
+
+    if (previousState[x] && !currentState[x])
+      Keyboard.release(getKeyValue(x));
+  }
+}
+
 
 void processKeys() {
 
   if (!useKeyboard()) {
     return;
-  } 
- 
-  
-  if (keyMode == 1) {          //PC Mode
-    //Process special keys first 
-    
-    
-    
   }
-  
-  
-  
-  
+
+  clearUnpressedKeys();
+
+
+  if (keyMode == 1) {          //PC Mode
+    //Process special keys first
+
+    if (isKeyDown(SPEC_KEY_SYMBOL_SHIFT)) {
+      //Symbol processing
+      if (isKeyDown[SPEC_KEY_P])
+        Keyboard.press('\"');
+      else if (isKeyDown[SPEC_KEY_1])
+        Keyboard.press('!');
+      else if (isKeyDown[SPEC_KEY_2])
+        Keyboard.press('@');
+      else if (isKeyDown[SPEC_KEY_3])
+        Keyboard.press('#');
+      else if (isKeyDown[SPEC_KEY_4])
+        Keyboard.press('$');
+      else if (isKeyDown[SPEC_KEY_5])
+        Keyboard.press('%');
+      else if (isKeyDown[SPEC_KEY_6])
+        Keyboard.press('&');
+      else if (isKeyDown[SPEC_KEY_7])
+        Keyboard.press('\'');
+      else if (isKeyDown[SPEC_KEY_8])
+        Keyboard.press('(');
+      else if (isKeyDown[SPEC_KEY_9])
+        Keyboard.press(')');
+      else if (isKeyDown[SPEC_KEY_0])
+        Keyboard.press('_');
+      else if (isKeyDown[SPEC_KEY_R])
+        Keyboard.press('<');
+      else if (isKeyDown[SPEC_KEY_T])
+        Keyboard.press('>');
+      else if (isKeyDown[SPEC_KEY_O])
+        Keyboard.press(';');
+      else if (isKeyDown[SPEC_KEY_H])
+        Keyboard.press('^');
+      else if (isKeyDown[SPEC_KEY_J])
+        Keyboard.press('-');
+      else if (isKeyDown[SPEC_KEY_K])
+        Keyboard.press('+');
+      else if (isKeyDown[SPEC_KEY_L])
+        Keyboard.press('=');
+      else if (isKeyDown[SPEC_KEY_Z])
+        Keyboard.press(':');
+      else if (isKeyDown[SPEC_KEY_X])
+        Keyboard.press('p');        //TODO: POUND SIGN
+      else if (isKeyDown[SPEC_KEY_C])
+        Keyboard.press('?');
+      else if (isKeyDown[SPEC_KEY_V])
+        Keyboard.press('/');
+      else if (isKeyDown[SPEC_KEY_B])
+        Keyboard.press('*');
+      else if (isKeyDown[SPEC_KEY_N])
+        Keyboard.press(',');
+      else if (isKeyDown[SPEC_KEY_M])
+        Keyboard.press('.');
+    }
+
+    else
+
+      if (isKeyDown(SPEC_KEY_SHIFT))
+      {
+        if (isKeyDown(SPEC_KEY_2))
+          Keyboard.press(KEY_CAPS_LOCK);
+        else if (isKeyDown[SPEC_KEY_5])
+          Keyboard.press(KEY_LEFT_ARROW);
+        else if (isKeyDown[SPEC_KEY_6])
+          Keyboard.press(KEY_DOWN_ARROW);
+        else if (isKeyDown[SPEC_KEY_7])
+          Keyboard.press(KEY_UP_ARROW);
+        else if (isKeyDown[SPEC_KEY_8])
+          Keyboard.press(KEY_RIGHT_ARROW);
+      }
+      else
+        for (int x = 0; x < 40; x++) {
+          if (currentState[x] && !previousState[x])
+            Keyboard.press(getKeyValue(x));
+        }
+
+
+  }
+
+
+
+
   if (keyMode == 2) {          //FUSE emulator mode
-    
     for (int x = 0; x < 40; x++) {
       if (currentState[x] && !previousState[x])
         Keyboard.press(getKeyValue(x));
-
-      if (previousState[x] && !currentState[x])
-        Keyboard.release(getKeyValue(x));
-
-      previousState[x] = currentState[x];
     }
 
-  } 
+  }
 
 }
 
@@ -235,6 +323,10 @@ void loop() {
 
   processKeys();
 
+  //Copy over the current state to the previous state
+  for (int x = 0; x < 40; x++) {
+    previousState[x] = currentState[x];
+  }
 
 
 
