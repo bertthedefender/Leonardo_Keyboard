@@ -35,7 +35,7 @@ short currentState[40];
 
 int useKeyboardPin = 13;      //If this goes LOW then send the keyboard signal
 
-int changeModePin = 0;
+int changeModePin = A5;
 int keyMode = 1;              // 1 = PC Mode, 2 = FUSE emulator mode
 
 int shifted = false;
@@ -102,6 +102,9 @@ void setup() {
   }
 
   pinMode(useKeyboardPin, INPUT_PULLUP);
+  
+  pinMode(changeModePin, INPUT_PULLUP);
+  
 }
 
 void setRowPressed(int rowPin) {
@@ -328,7 +331,7 @@ void processKeys() {
         else if (isKeyDown(SPEC_KEY_Z))
           pressAndRelease(':');
         else if (isKeyDown(SPEC_KEY_X))
-          pressAndRelease('_');            //Pound sign not supported
+          pressAndRelease('_');            //Pound sign not supported in US layout
         else if (isKeyDown(SPEC_KEY_C))
           pressAndRelease('?');
         else if (isKeyDown(SPEC_KEY_V))
@@ -389,9 +392,17 @@ void processKeys() {
 
 void loop() {
 
-  //TODO:  Scan keymap change pin first
-
-
+  //Scan keymap change pin first
+  if (digitalRead(changeModePin) == LOW) {
+    delay(100);
+    if (digitalRead(changeModePin) == LOW) {
+    keyMode+=1;
+    if (keyMode==3)
+      keyMode=1;
+    delay(500);
+    }
+  }
+  
   //Scan keyboard matrix
   for (int row = 0; row < 5; row++) {
     setRowPressed(rowStartPin + row);
@@ -424,26 +435,4 @@ void loop() {
 }
 
 
-/*
-Algorithm:
-
-Iterate rows, setting each row high in turn.
-  Iterate columns, reading each pins status.
-    If (row,col) pin == LOW
-         addToCurrentScanState
-    end if
-  NEXT
-NEXT
-
-Compare PreviousState to CurrentState
-if (previousState(x,y) AND !currentState(x,y))
-  keyRELEASE(desiredKey)
-if (!previousState(x,y) AND currentState(x,y))
-  keyPRESS(desiredKey)
-
-PreviousState = CurrentState
-Clear CurrentState
-
-
-*/
 
