@@ -12,9 +12,9 @@
 
  PIN 13 MUST BE SHORTED TO GROUND IN ORDER TO SEND KEY PRESSES
  THIS IS SO THAT THE KEYBOARD INTERFACE CAN BE TURNED OFF
- 
+
  Keyboard has two modes.
- 
+
  MODE 1:  PC Mode - many key symbols ranslated to Symbol-Shift and Caps-Shift
    equivalents.  Caps lock etc works. Symbol shift + key to access symbols
    Other keys:
@@ -22,7 +22,7 @@
      EDIT = Tab
      EXTEND MODE + number = Function key
      INV VIDEO = Alt
-     
+
  MODE 2:  Emulator mode - all keys output their raw spectrum equivalents. Except
           for symbol shift which maps to CTRL.
 ********/
@@ -36,6 +36,8 @@ short currentState[40];
 int useKeyboardPin = 13;      //If this goes LOW then send the keyboard signal
 
 int changeModePin = A5;
+int beeperPin = A4;
+
 int keyMode = 1;              // 1 = PC Mode, 2 = FUSE emulator mode
 
 int shifted = false;
@@ -102,10 +104,21 @@ void setup() {
   }
 
   pinMode(useKeyboardPin, INPUT_PULLUP);
-  
   pinMode(changeModePin, INPUT_PULLUP);
-  
+  pinMode(beeperPin, OUTPUT);
 }
+
+void beep(int pin, int duration, int frequency) {
+
+  for (int x = 0; x < duration; x++) {
+    digitalWrite(pin, HIGH);
+    delayMicroseconds(frequency);
+    digitalWrite(pin, LOW);
+    delayMicroseconds(frequency);
+  }
+
+}
+
 
 void setRowPressed(int rowPin) {
 
@@ -202,13 +215,10 @@ boolean wasKeyDown(int keyPos) {
 }
 
 void clearUnpressedKeys() {
-
   for (int x = 0; x < 40; x++) {
-
     if (previousState[x] && !currentState[x])
       Keyboard.release(getKeyValue(x));
   }
-
 }
 
 void pressAndRelease(char keyPress)
@@ -232,7 +242,6 @@ void processKeys() {
 
   if (keyMode == 1) {          //PC Mode
     //Process special keys first
-
     if (isKeyDown(SPEC_KEY_SHIFT) &&
         isKeyDown(SPEC_KEY_SYMBOL_SHIFT)) {
       if (isKeyDown(SPEC_KEY_1))
@@ -264,25 +273,20 @@ void processKeys() {
       if (isKeyDown(SPEC_KEY_1)) {
         pressAndRelease(KEY_TAB);
       }
-
       if (isKeyDown(SPEC_KEY_2)) {
         pressAndRelease(KEY_CAPS_LOCK);
       }
       if (isKeyDown(SPEC_KEY_5)) {
         pressAndRelease(KEY_LEFT_ARROW);
-
       }
       if (isKeyDown(SPEC_KEY_6)) {
         pressAndRelease(KEY_DOWN_ARROW);
-
       }
       if (isKeyDown(SPEC_KEY_7)) {
         pressAndRelease(KEY_UP_ARROW);
-
       }
       if (isKeyDown(SPEC_KEY_8)) {
         pressAndRelease(KEY_RIGHT_ARROW);
-
       }
       if (isKeyDown(SPEC_KEY_SPACE)) {
         pressAndRelease(KEY_ESC);
@@ -351,40 +355,35 @@ void processKeys() {
       previousState[SPEC_KEY_SHIFT] = 0;
       Keyboard.releaseAll();
       return;
-
     }
+
     if (!shifted)    {
-      
       if (!(currentState[SPEC_KEY_SHIFT] &&
-          currentState[SPEC_KEY_4]))
-          Keyboard.release(KEY_LEFT_ALT);
-      
+            currentState[SPEC_KEY_4])) {
+        Keyboard.release(KEY_LEFT_ALT);
+      }
+
       if (currentState[SPEC_KEY_SHIFT] &&
           currentState[SPEC_KEY_4])
-          {
-            Keyboard.press(KEY_LEFT_ALT);
-            currentState[SPEC_KEY_SHIFT] = currentState[SPEC_KEY_4] = 0;
-            previousState[SPEC_KEY_SHIFT] = previousState[SPEC_KEY_SHIFT] = 0;
-          }
-      
+      {
+        Keyboard.press(KEY_LEFT_ALT);
+        currentState[SPEC_KEY_SHIFT] = currentState[SPEC_KEY_4] = 0;
+        previousState[SPEC_KEY_SHIFT] = previousState[SPEC_KEY_SHIFT] = 0;
+      }
+
       for (int x = 0; x < 40; x++) {
         if (currentState[x] && !previousState[x]) {
           Keyboard.press(getKeyValue(x));
         }
       }
     }
-
   }
 
-
-
-
-  if (keyMode == 2) {          //FUSE emulator mode
+  if (keyMode == 2) {          //FUSE emulator mode just use standard key parsing
     for (int x = 0; x < 40; x++) {
       if (currentState[x] && !previousState[x])
         Keyboard.press(getKeyValue(x));
     }
-
   }
 
 }
@@ -394,15 +393,18 @@ void loop() {
 
   //Scan keymap change pin first
   if (digitalRead(changeModePin) == LOW) {
-    delay(100);
+    delay(200);
     if (digitalRead(changeModePin) == LOW) {
-    keyMode+=1;
-    if (keyMode==3)
-      keyMode=1;
-    delay(500);
+      keyMode += 1;
+      if (keyMode == 3) {
+        keyMode = 1;
+      }
+      beep(beeperPin, 100, keyMode * 1500 );
+      delay(500);
+      return;
     }
   }
-  
+
   //Scan keyboard matrix
   for (int row = 0; row < 5; row++) {
     setRowPressed(rowStartPin + row);
