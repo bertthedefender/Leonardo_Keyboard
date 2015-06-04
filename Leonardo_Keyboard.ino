@@ -432,6 +432,9 @@ void loop() {
     previousState[x] = currentState[x];
   }
 
+  //This delay is used to attempt to stop phantom keys
+  //from the combinations used - e.g, a 0 appearing when pressing delete (cos it's interpreting SHIFT-0)
+  delay(75);
 
 
 }
