@@ -1,4 +1,4 @@
-
+0
 /*******
  NOTES:
 
@@ -35,8 +35,8 @@ short currentState[40];
 
 int useKeyboardPin = 13;      //If this goes LOW then send the keyboard signal
 
-int changeModePin = A5;
-int beeperPin = A4;
+int changeModePin = A1;
+int beeperPin = A0;
 
 int keyMode = 1;              // 1 = PC Mode, 2 = FUSE emulator mode
 
