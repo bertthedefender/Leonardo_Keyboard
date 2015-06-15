@@ -1,4 +1,3 @@
-0
 /*******
  NOTES:
 
@@ -287,6 +286,9 @@ void processKeys() {
       }
       if (isKeyDown(SPEC_KEY_8)) {
         pressAndRelease(KEY_RIGHT_ARROW);
+      }
+      if (isKeyDown(SPEC_KEY_9)) {
+        pressAndRelease(KEY_F11);
       }
       if (isKeyDown(SPEC_KEY_SPACE)) {
         pressAndRelease(KEY_ESC);
