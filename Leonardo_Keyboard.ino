@@ -223,10 +223,11 @@ void clearUnpressedKeys() {
 void pressAndRelease(char keyPress)
 {
   shifted = true;
+  Keyboard.releaseAll();
   Keyboard.press(keyPress);
-  delay(5);
-  Keyboard.release(keyPress);
-  delay(30);
+  delay(10);
+  Keyboard.releaseAll();
+  delay(20);
 }
 
 void processKeys() {
@@ -413,7 +414,7 @@ void loop() {
     for (int col = 0; col < 8; col++) {
       setColumnPressed(colStartPin + col);
       if (digitalRead(col) == LOW) {
-        delay(20);                          // debounce delay
+        delay(50);                          // debounce delay
         if (digitalRead(col) == LOW) {
           currentState[row * 8 + col] = 1;
         }
