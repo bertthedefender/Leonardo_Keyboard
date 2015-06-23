@@ -409,16 +409,8 @@ void loop() {
   }
 
   //Scan keyboard matrix
-  for (int index = 0; index < 40; index++) {
-    currentState[index] = 0;
-  }
-
-  bool keyWasPressed = true;
-  bool keyDown = false;
-
-  while (keyWasPressed)
+  if (keyMode == 1)       //Spectrum mode
   {
-    keyDown = false;
     for (int row = 0; row < 5; row++) {
       setRowPressed(rowStartPin + row);
       for (int col = 0; col < 8; col++) {
@@ -426,20 +418,44 @@ void loop() {
         if (digitalRead(col) == LOW) {
           delay(50);                          // debounce delay
           if (digitalRead(col) == LOW) {
-            if (!currentState[row * 8 + col]) {
+            currentState[row * 8 + col] = 1;
+          }
+          else {
+            currentState[row * 8 + col] = 0;
+          }
+        }
+        else {
+          currentState[row * 8 + col] = 0;
+        }
+      }
+    }
+  }
+
+  if (keyMode == 2)   //PC Mode
+  {
+    for (int x = 0; x < 3; x++) {
+      for (int row = 0; row < 5; row++) {
+        setRowPressed(rowStartPin + row);
+        for (int col = 0; col < 8; col++) {
+          setColumnPressed(colStartPin + col);
+          if (digitalRead(col) == LOW) {
+            delay(20);                          // debounce delay
+            if (digitalRead(col) == LOW) {
               currentState[row * 8 + col] = 1;
-              keyDown = true;
-              break;
             }
+            else {
+              currentState[row * 8 + col] = 0;
+            }
+          }
+          else {
+            currentState[row * 8 + col] = 0;
           }
         }
       }
-      if (keyDown)
-        break;
-
-      keyWasPressed = false;
+      delay(20);
     }
   }
+
 
   processKeys();
 
