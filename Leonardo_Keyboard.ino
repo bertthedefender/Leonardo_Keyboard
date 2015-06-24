@@ -337,8 +337,8 @@ void processKeys() {
           pressAndRelease('=');
         else if (isKeyDown(SPEC_KEY_Z))
           pressAndRelease(':');
-        else if (isKeyDown(SPEC_KEY_X))
-          pressAndRelease('_');            //Pound sign not supported in US layout
+  //      else if (isKeyDown(SPEC_KEY_X))
+ //        pressAndRelease('_');            //Pound sign not supported in US layout
         else if (isKeyDown(SPEC_KEY_C))
           pressAndRelease('?');
         else if (isKeyDown(SPEC_KEY_V))
@@ -452,7 +452,6 @@ void loop() {
           }
         }
       }
-      delay(20);
     }
   }
 
